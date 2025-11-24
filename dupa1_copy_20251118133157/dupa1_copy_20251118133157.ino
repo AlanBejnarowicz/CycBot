@@ -11,14 +11,16 @@ Servo head_servo; // create servo object to control a servo
 #define DEFAULT_SERVO_POS 90
 
 int state_machine = 0;
+int prev_state_machine = 0;
 bool touch_detected = false;
-int double_touch_detected = 0; // 0 - no touch, 1 - first touch, 2 - double touch
+int double_touch_detected = 0; // ...__0__/'1'\_2_/'3'\_0_...
 long long unsigned int timer_cnt = 0;
-#define DOUBLE_TOUCH_THRESH 0.6
+long long unsigned int emotion_cnt = 0;
+#define DOUBLE_TOUCH_THRESH 0.8
 
 float alpha = 0.2;
 float beta = 0.001;
-float filterred_pressure = 0.0;
+float filtered_pressure = 0.0;
 
 float xk_1 = 0.0;
 float vk_1 = 0.0;
@@ -33,9 +35,9 @@ float belly_integral = 0.0;
 #define UPPER_INTEGRAL_BELLY_LIM 0.8
 #define LOWER_INTEGRAL_BELLY_LIM -0.1
 
-float last_filterred_pressure = 0.0;
+float last_filtered_pressure = 0.0;
 
-#define TOUCH_COOLDOWN_TIME 4.0
+#define TOUCH_COOLDOWN_TIME 1.5
 float touch_cooldown = 0.0;
 
 #define BETWEEN_ANIM_COOLDOWN_TIME 1.0
@@ -83,14 +85,14 @@ float readADC_Voltage(uint8_t channel)
 
   // Start the convertion
   ADCSRA |= (1 << ADSC);
-  
+
   // Wait for the convertion end
   while (ADCSRA & (1 << ADSC));
   
   // Read ADC value and convert to voltage
   uint16_t adc_value = ADC;
   float voltage = (adc_value * ADC_REF_VOLTAGE) / ADC_RESOLUTION;
-  
+
   return voltage;
 }
 
@@ -147,7 +149,8 @@ void M4_back(uint8_t Speed) ///<Motor4 Back off
   analogWrite(E4,Speed);
 }
 
-void setup() {
+void setup()
+{
   // put your setup code here, to run once:
   Serial.begin(115200);
   while (!Serial) {;} // waiting for arduino to open the com port
@@ -168,7 +171,9 @@ void setup() {
   M1_advance(0);
   M2_advance(0);
   M3_advance(0);
-  M4_advance(0);  
+  M4_advance(0);
+
+  M4_back(255); // open valves
 }
 
 
@@ -202,7 +207,7 @@ void anim_head_no(float dt)
       head_servo.write(DEFAULT_SERVO_POS - 40);
     }
 
-    if(head_anim_time >= 2.0 && head_anim_time <= 2.5)
+    if (head_anim_time >= 2.0 && head_anim_time <= 2.5)
     {
       head_servo.write(DEFAULT_SERVO_POS + 40);
     }
@@ -218,53 +223,8 @@ void anim_head_no(float dt)
       between_anim_cooldown = BETWEEN_ANIM_COOLDOWN_TIME;
       head_servo.write(DEFAULT_SERVO_POS);
 
-      if (state_machine == 1)
-        state_machine = 2;
-    }
-  }
-}
-
-
-#define BOTH_EARS_ANIM_MAX_TIME 5
-float both_ears_anim_time = BOTH_EARS_ANIM_MAX_TIME;
-
-void anim_both_ears(float dt)
-{
-  if (both_ears_anim_time <= BOTH_EARS_ANIM_MAX_TIME)
-  {
-    both_ears_anim_time += dt;
-
-    if (both_ears_anim_time >= 0 && both_ears_anim_time <= 1.5)
-    {
-      M3_advance(250);
-      M2_back(250);
-
-      anim_playing = true;
-    }
-
-    if (both_ears_anim_time >= 1.5 && both_ears_anim_time <= 2.0)
-    {
-      M3_advance(180);
-      M2_back(0);
-    }
-
-    if (both_ears_anim_time >= 3.5 && both_ears_anim_time <= 4.0)
-    {
-      M3_advance(0);
-      M2_advance(0);
-      M4_back(250);
-    }
-
-    if (both_ears_anim_time >= 4.0 && both_ears_anim_time <= 5.0)
-    {
-      M4_back(0);
-    }
-
-    if (both_ears_anim_time >= BOTH_EARS_ANIM_MAX_TIME - 0.1)
-    {
-      M4_back(0);
-      anim_playing = false;
-      between_anim_cooldown = BETWEEN_ANIM_COOLDOWN_TIME;
+      if (state_machine == 4)
+        state_machine = 1;
     }
   }
 }
@@ -281,20 +241,21 @@ void anim_head_scan(float dt)
 
     if (head_scan_anim_time >= 0 && head_scan_anim_time <= 1.5)
     {
-      head_servo.write(DEFAULT_SERVO_POS - 80);
-
+      float servo_angle = (DEFAULT_SERVO_POS) - ((DEFAULT_SERVO_POS + 40) * ((head_scan_anim_time) / 1.5));
+      head_servo.write(servo_angle);
+  
       anim_playing = true;
     }
 
     if (head_scan_anim_time >= 1.5 && head_scan_anim_time <= 6.5)
     {
-      float servo_angle = (DEFAULT_SERVO_POS - 80) + ((DEFAULT_SERVO_POS + 80) * ((head_scan_anim_time - 1.5) / 6.5));
+      float servo_angle = (DEFAULT_SERVO_POS - 40) + ((DEFAULT_SERVO_POS + 40) * ((head_scan_anim_time - 1.5) / 6.5));
       head_servo.write(servo_angle);
     }
 
     if (head_scan_anim_time >= 6.5 && head_scan_anim_time <= 11.5)
     {
-      float servo_angle = (DEFAULT_SERVO_POS + 80) - ((DEFAULT_SERVO_POS + 80) * ((head_scan_anim_time - 6.5) / 11.5));
+      float servo_angle = (DEFAULT_SERVO_POS + 40) - ((DEFAULT_SERVO_POS + 40) * ((head_scan_anim_time - 6.5) / 11.5));
       head_servo.write(servo_angle);
     }
 
@@ -303,15 +264,18 @@ void anim_head_scan(float dt)
       anim_playing = false;
       between_anim_cooldown = BETWEEN_ANIM_COOLDOWN_TIME;
       head_servo.write(DEFAULT_SERVO_POS);
-
-      if (state_machine == 1)
-        state_machine = 2;
     }
+
+    if (emotion_cnt * dt > 20 && state_machine == 1)
+      state_machine = 0;
+
+    if (state_machine == 1 && touch_detected == true)
+      state_machine = 2;
   }
 }
 
 
-#define EAR_1_ANIM_MAX_TIME 10
+#define EAR_1_ANIM_MAX_TIME 3
 float ear_1_anim_time = EAR_1_ANIM_MAX_TIME;
 
 void anim_left_ear(float dt)
@@ -322,21 +286,22 @@ void anim_left_ear(float dt)
 
     if (ear_1_anim_time >= 0 && ear_1_anim_time <= 1.5)
     {
+      M4_back(0);
       anim_playing = true;
-      M3_advance(250);
+      M3_advance(200);
     }
 
-    if (ear_1_anim_time >= 1.5 && ear_1_anim_time <= 8.0)
+    if (ear_1_anim_time >= 1.5 && ear_1_anim_time <= 2.0)
     {  
-      M3_advance(120);
+      M3_advance(20);
     }
 
-    if (ear_1_anim_time >= 8.0 && ear_1_anim_time <= 9.5)
+    if (ear_1_anim_time >= 2.0 && ear_1_anim_time <= 2.5)
     {  
       M3_advance(0);
     }
 
-    if (ear_1_anim_time >= 9.5 && ear_1_anim_time <= 10.0)
+    if (ear_1_anim_time >= 2.5 && ear_1_anim_time <= 3.0)
     {
       M3_advance(0);
       M4_back(255);
@@ -344,19 +309,24 @@ void anim_left_ear(float dt)
 
     if (ear_1_anim_time >= EAR_1_ANIM_MAX_TIME - 0.1)
     {
-      M4_back(0);
       anim_playing = false;
       between_anim_cooldown = BETWEEN_ANIM_COOLDOWN_TIME;
       //head_servo.write(DEFAULT_SERVO_POS);
 
       if (state_machine == 3)
-        state_machine = 0;
+        state_machine = 2;
     }
+
+    if (emotion_cnt * dt > 20 && state_machine == 3)
+      state_machine = 0;
+
+    if (double_touch_detected)
+      state_machine = 4;
   }
 }
 
 
-#define EAR_2_ANIM_MAX_TIME 10
+#define EAR_2_ANIM_MAX_TIME 3
 float ear_2_anim_time = EAR_2_ANIM_MAX_TIME;
 
 void anim_right_ear(float dt)
@@ -367,21 +337,22 @@ void anim_right_ear(float dt)
 
     if (ear_2_anim_time >= 0 && ear_2_anim_time <= 1.5)
     {
+      M4_back(0);
       anim_playing = true;
-      M2_back(250);
+      M2_back(200);
     }
 
-    if(ear_2_anim_time >= 1.5 && ear_2_anim_time <= 8.0)
+    if (ear_2_anim_time >= 1.5 && ear_2_anim_time <= 2.0)
     {  
-      M2_back(120);
+      M2_back(20);
     }
 
-    if (ear_2_anim_time >= 8.0 && ear_2_anim_time <= 9.5)
+    if (ear_2_anim_time >= 2.0 && ear_2_anim_time <= 2.5)
     {
       M2_back(0);
     }
 
-    if (ear_2_anim_time >= 9.5 && ear_2_anim_time <= 10.0)
+    if (ear_2_anim_time >= 2.5 && ear_2_anim_time <= 3.0)
     {
       M2_back(0);
       M4_back(255);
@@ -389,7 +360,6 @@ void anim_right_ear(float dt)
 
     if (ear_2_anim_time >= EAR_2_ANIM_MAX_TIME - 0.1)
     {
-      M4_back(0);
       anim_playing = false;
       between_anim_cooldown = BETWEEN_ANIM_COOLDOWN_TIME;
       // head_servo.write(DEFAULT_SERVO_POS);
@@ -397,11 +367,17 @@ void anim_right_ear(float dt)
       if (state_machine == 2)
         state_machine = 3;
     }
+
+    if (emotion_cnt * dt > 20 && state_machine == 2)
+      state_machine = 0;
+
+    if (double_touch_detected)
+      state_machine = 4;
   }
 }
 
 
-#define SAD_ANIM_MAX_TIME 20
+#define SAD_ANIM_MAX_TIME 10
 float sad_anim_time = SAD_ANIM_MAX_TIME;
 
 void anim_sad_ears(float dt)
@@ -412,30 +388,31 @@ void anim_sad_ears(float dt)
 
     if (sad_anim_time >= 0 && sad_anim_time <= 1.5)
     {
+      M4_back(0);
       anim_playing = true;
-      M3_advance(250);
-      M2_back(250);
+      M3_advance(200);
+      M2_back(200);
       touch_cooldown = 0.0;
     }
 
-    if (sad_anim_time >= 1.5 && sad_anim_time <= 18)
+    if (sad_anim_time >= 1.5 && sad_anim_time <= 8)
     {
-      M3_advance(180);
-      M2_back(120);
+      M3_advance(20);
+      M2_back(20);
     }
 
     // waiting for touch
-    if (sad_anim_time >= 2.0 && sad_anim_time <= 15 && touch_detected) // touch_cooldown >= TOUCH_COOLDOWN_TIME - 0.2)
+    if (sad_anim_time >= 2.0 && sad_anim_time <= 8 && touch_detected) // touch_cooldown >= TOUCH_COOLDOWN_TIME - 0.2)
     {
       M4_back(255);
-      sad_anim_time = 17.5;
+      sad_anim_time = SAD_ANIM_MAX_TIME - 0.5;
 
       if (state_machine == 0)
         state_machine = 1;
       Serial.println("Playing phase 2, ears up!");
     }
 
-    if (sad_anim_time >= 18 && sad_anim_time <= SAD_ANIM_MAX_TIME)
+    if (sad_anim_time >= 8 && sad_anim_time <= SAD_ANIM_MAX_TIME)
     {
       M3_advance(0);
       M2_back(0);
@@ -444,7 +421,6 @@ void anim_sad_ears(float dt)
 
     if (sad_anim_time >= SAD_ANIM_MAX_TIME - 0.1)
     {
-      M4_back(0);
       M3_advance(0);
       M2_back(0);
       anim_playing = false;
@@ -471,10 +447,10 @@ void loop()
   xk_1 = xk;
   vk_1 = vk;
 
-  filterred_pressure = xk;
+  filtered_pressure = xk;
 
   // Belly inflating
-  float belly_error = (3.8 - filterred_pressure);
+  float belly_error = (3.8 - filtered_pressure);
   belly_integral += belly_error * dt;
 
   if (belly_integral >= UPPER_INTEGRAL_BELLY_LIM)
@@ -492,12 +468,12 @@ void loop()
     motor_belly = 255;
 
   average_cnt++;
-  average_pressure = ((average_pressure * (average_cnt-1)) + filterred_pressure) / average_cnt;
+  average_pressure = ((average_pressure * (average_cnt-1)) + filtered_pressure) / average_cnt;
 
   M1_advance((int)(motor_belly));
 
   // Serial.print("Pressure: ");
-  // Serial.println(filterred_pressure);
+  // Serial.println(filtered_pressure);
   // Serial.print("AVG pressure: ");
   // Serial.println(average_pressure);
   //   Serial.print("Kp: ");
@@ -510,17 +486,21 @@ void loop()
 
   // Touch detection (dotknij grzyba)
   touch_detected = false;
-  if (double_touch_detected == 2)
+  if (double_touch_detected == 3)
     double_touch_detected = 0;
 
-  if (filterred_pressure - average_pressure > 0.2 && motor_belly <= 50 && filterred_pressure > 4.0)
+  if (filtered_pressure - average_pressure > 0.8 && motor_belly <= 50 && filtered_pressure > 4.3)
   {
+    // reset the average
+    average_pressure -= filtered_pressure;
+    average_cnt -= 1;
+
     if (touch_cooldown <= 0.0)
     {
       touch_detected = true;
 
       Serial.print("Touch detected: ");
-      Serial.println(filterred_pressure);
+      Serial.println(filtered_pressure);
 
       touch_cooldown = TOUCH_COOLDOWN_TIME;
     }
@@ -546,12 +526,28 @@ void loop()
     timer_cnt = 0;
   }
 
-  Serial.print("state: ");
-  Serial.println(state_machine);
+  // Serial.print("state: ");
+  // Serial.println(state_machine);
+
+  // Serial.print("prev_state: ");
+  // Serial.println(prev_state_machine);
+
+  // Serial.print("cnt: ");
+  // Serial.println((int)emotion_cnt);
+  // Serial.print("\n");
+
+  // Serial.print("pressure: ");
+  // Serial.println(filtered_pressure);
 
   // State machine
   if (between_anim_cooldown <= 0 && anim_playing == false)
   {
+    if (prev_state_machine != state_machine)
+    {
+      if (!((prev_state_machine == 3 && state_machine == 2) || (prev_state_machine == 2 && state_machine == 3)))
+        emotion_cnt = 0;
+    }
+
     switch (state_machine)
     {
       case 0:
@@ -562,10 +558,10 @@ void loop()
         }
         break;
       case 1:
-        if (head_anim_time >= HEAD_ANIM_MAX_TIME - 0.2)
+        if (head_scan_anim_time >= HEAD_SCAN_ANIM_MAX_TIME - 0.2)
         {
-          head_anim_time = 0.0;
-          Serial.println("Playing animation, head no!");
+          head_scan_anim_time = 0.0;
+          Serial.println("Playing animation, scan head!");
         }
         break;
       case 2:
@@ -582,50 +578,17 @@ void loop()
           Serial.println("Playing animation, left ear down!");
         }
         break;
+      case 4:
+        if (head_anim_time >= HEAD_ANIM_MAX_TIME - 0.2)
+        {
+          head_anim_time = 0.0;
+          Serial.println("Playing animation, left ear down!");
+        }
+        break;
     }
+
+    prev_state_machine = state_machine;
   }
-
-  // // tucz detekszyn
-  // if(filterred_pressure - average_pressure > 0.2 && touch_cooldown <= 0.0 && motor_belly <= 50 ) {
-  //   Serial.print("Touch detected: ");
-  //   Serial.println(filterred_pressure);
-
-  //   touch_cooldown = TOUCH_COOLDOWN_TIME;
-
-  //   if(between_anim_cooldown <= 0 && anim_playing == false) {
-
-
-  //     if(head_scan_anim_time >= HEAD_SCAN_ANIM_MAX_TIME - 0.2  && anim_cnt == 0){
-  //       head_scan_anim_time = 0.0;
-  //       Serial.println("Playing animation, scan head!");
-  //     }
-
-  //     if(sad_anim_time >= SAD_ANIM_MAX_TIME - 0.2  && anim_cnt == 1){
-  //       sad_anim_time = 0.0;
-  //       Serial.println("Playing animation, sad ears!");
-  //     }
-
-  //     if(head_anim_time >= HEAD_ANIM_MAX_TIME - 0.2  && anim_cnt == 2){
-  //       head_anim_time = 0.0;
-  //       Serial.println("Playing animation, head no!");
-  //     }
-
-  //     if(both_ears_anim_time >= BOTH_EARS_ANIM_MAX_TIME - 0.2  && anim_cnt == 3){
-  //       both_ears_anim_time = 0.0;
-  //       Serial.println("Playing animation, both ears down!");
-  //     }
-
-  //     if(ear_2_anim_time >= EAR_2_ANIM_MAX_TIME - 0.2 && anim_cnt == 4) {
-  //       ear_2_anim_time = 0.0;
-  //       Serial.println("Playing animation, right ear down!");
-  //     }
-
-  //     anim_cnt ++;
-  //     if(anim_cnt >= 5)
-  //       anim_cnt = 0;
-
-  //   }
-  // }
 
   // Time passes by
   if (touch_cooldown >= 0.0)
@@ -639,7 +602,6 @@ void loop()
   }
 
   // ANIMS
-  anim_both_ears(dt);
   anim_right_ear(dt);
   anim_left_ear(dt);
   anim_head_no(dt);
@@ -647,6 +609,7 @@ void loop()
   anim_sad_ears(dt);
 
   timer_cnt++;
+  emotion_cnt++;
 
   // Wait a bit
   delay(dt * 1000);
