@@ -1,0 +1,57 @@
+\subsection{Design of the robot}
+
+Our robot, CycBot, was designed in Fusion 360 and fabricated using a combination of 3D printing
+and silicone molding. The robot's body consists of a 3D-printed frame, while the body and ears 
+are made from Ecoflex 00-30 silicone. The robot uses one servo motor to rotate head, three 
+air pumps, and two air valves to control the inflation and deflation of the ears. To make robot
+more human-like we casted "belly" and ears using skin-colored silicone. TO keep robot upright
+we poured small amount of hard silicone on the bottom of the robot. The robot is controlled
+using an Arduino microcontroller, which manages the servo motor and air pumps/valves. The
+robot's behavior is programmed to respond to human interactions, allowing it to express different
+emotions through ear movements and head rotations. 
+
+\subsection{Human Robot Interactions (HRI)}
+We designed our robot to show five distinct emotions:
+Interested, happiness, annoyed, and sadness.
+Each emotion is expressed through a combination of ear movements and head rotations.
+We designed our robot to have human input, Inflatable belly of the robot has a pressure sensor
+that detects when a human is touching it. Robot can detect two types of touch: light touch
+and strong touch. 
+
+\begin{table}[h]
+\caption{Robot expressed emotions and corresponding ear/head movements}
+\begin{center}
+\begin{tabular}{ccccc}
+\hline
+&
+\multicolumn{1}{c}{Ears Movement} & \multicolumn{1}{c}{Head Movement}\\
+\hline
+
+Idle & ----- & -----\\
+Interested & Slowly swipe head & -----\\
+Happy & ----- & Move ears one at time \\
+Annoyed & Rapid head movement & -----\\
+Sad & ----- & Both ears down \\
+
+\hline
+\label{table-emotions}
+\end{tabular}
+\end{center}
+\end{table}
+
+\subsection{Robot behaviour}
+
+Our robot operates based on a state machine that tries to interact with humans by expressing
+different emotions. The robot starts in an idle state, where it waits for human interaction.
+To attract human attention, the robot periodically enters the interested state, characterized by
+slow head swiping movements. When a human touches the robot's belly lightly, it transitions to the happy state,
+expressing joy by moving its ears one at a time. If the robot experiences a strong touch, it becomes annoyed,
+demonstrated by rapid head movements. Whole interaction cycle is shown in Figure~\ref{fig:cycbot-state}.
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{data/CyCBot_state_machine.png}
+    \caption{CycBot state machine diagram.}
+    \label{fig:cycbot-state}
+\end{figure}
