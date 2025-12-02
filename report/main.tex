@@ -1,6 +1,6 @@
-\documentclass[letterpaper, 10 pt, conference]{ieeeconf}  % Comment this line out if you need a4paper
+% \documentclass[letterpaper, 10pt, conference]{ieeeconf}  % Comment this line out if you need a4paper
 
-%\documentclass[a4paper, 10pt, conference]{ieeeconf}      % Use this line for a4 paper
+\documentclass[a4paper, 10pt, conference]{ieeeconf}      % Use this line for a4 paper
 
 \IEEEoverridecommandlockouts                              % This command is only needed if 
                                                           % you want to use the \thanks command
@@ -9,20 +9,34 @@
 
 
 % The following packages can be found on http:\\www.ctan.org
-\usepackage{graphics} % for pdf, bitmapped graphics files
+% \usepackage{graphics} % for pdf, bitmapped graphics files
 %\usepackage{epsfig} % for postscript graphics files
 %\usepackage{mathptmx} % assumes new font selection scheme installed
 %\usepackage{times} % assumes new font selection scheme installed
 %\usepackage{amsmath} % assumes amsmath package installed
 %\usepackage{amssymb}  % assumes amsmath package installed
 \usepackage{graphicx}
-\title{\LARGE \bf
-CycBot: A Cyclical Soft Robot for Nonverbal Communication with Humans
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=magenta,
+    urlcolor=blue,
+    citecolor=blue,
+    pdfpagemode=UseOutlines
 }
+\urlstyle{same}
+
+\usepackage[backend=biber,style=ieee]{biblatex}
+\addbibresource{references.bib}
+
+
+\title{\LARGE \bf{CycBot: A~Cyclical Soft Robot for~Non-verbal Communication with~Humans}}
 
 \begin{document}
 
-\author{Alan Bejnarowicz, Jan Górski, Maciej Piszczek }
+\author{Alan Bejnarowicz, Jan Górski, Maciej Piszczek}
 
 
 \maketitle
@@ -33,75 +47,34 @@ CycBot: A Cyclical Soft Robot for Nonverbal Communication with Humans
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
 
-In this project, we present CycBot – a soft robot designed for nonverbal communication with humans. 
-The robot's design incorporates silicone materials and 3D printing. Our robot was inspired by 
-toys like Furbies and Tamagotchis \cite{furby-wiki,tamagotchi-wiki}, aiming to create an engaging interaction experience.
-We achieved a successful design and fabrication of CycBot, demonstrating its ability to express
-emotions using soft robotics actuator. In our Human-Robot Interaction (HRI) experiment, we evaluated
-the robot's effectiveness in conveying emotions and engaging users.
+In this project, we present CycBot --- a soft robot designed for non-verbal communication with humans. The robot's design incorporates silicone materials and 3D printing. Our robot was inspired by toys like Furbies and Tamagotchis~\cite{furby-wiki,tamagotchi-wiki}, aiming to create an engaging interaction experience. We achieved a successful design and fabrication of CycBot, demonstrating its ability to express emotions using soft robotics actuator. In our Human-Robot Interaction (HRI) experiment, we evaluated the robot's effectiveness in conveying emotions and engaging users.
 
 \end{abstract}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Introduction}
 \input{sections/introduction.tex}
 
-
-\section{Methods}
 \input{sections/methods.tex}
 
-\section{Results}
 \input{sections/results.tex}
 
-\section{Discussion ($\sim\% 20$)}
-The discussion section is where you put your interpretations, extrapolations etc. It normally 
-starts with concrete conclusions that come directly from your data itself, then gradually becomes 
-more abstract as you extrapolate into the future and into broader research areas. You should start 
-concrete, to show people that you are working with fact and not fantasy. But there is no harm in 
-claiming potential greater significance for your results, if justifiable. Go back and check again, 
-that what you have written in your discussion section ties in properly with the results you included 
-in your report. What is the main message that you want readers to take home? Make this the primary 
-focus of your discussion! The rest of the discussion should provide supporting arguments for this, 
-your main thread. Your discussion section could address, e.g., select aspects of the robot’s 
-performance compared to the state-of-the-art and results and implications of your HRI experiment(s).
+\section{Discussion} % ~20%
+The discussion section is where you put your interpretations, extrapolations etc. It normally starts with concrete conclusions that come directly from your data itself, then gradually becomes more abstract as you extrapolate into the future and into broader research areas. You should start concrete, to show people that you are working with fact and not fantasy. But there is no harm in claiming potential greater significance for your results, if justifiable. Go back and check again, that what you have written in your discussion section ties in properly with the results you included in your report. What is the main message that you want readers to take home? Make this the primary focus of your discussion! The rest of the discussion should provide supporting arguments for this, your main thread. Your discussion section could address, e.g., select aspects of the robot's performance compared to the state-of-the-art and results and implications of your HRI experiment(s).
 
+\section{Conclusion} % ~5%
 
-
-
-\section{Conclusion ($\sim\% 5$)}
-
-A conclusion may review the main points of the work, do not replicate the abstract 
-as the conclusion. A conclusion might elaborate on the importance of the work or 
-suggest applications, extensions, and improvements. 
+A conclusion may review the main points of the work, do not replicate the abstract as the conclusion. A conclusion might elaborate on the importance of the work or suggest applications, extensions, and improvements.
 
 \addtolength{\textheight}{-12cm}   % This command serves to balance the column lengths
- 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Appendix}
 
-Insert the link to an edited video (unlisted Youtube) of your project and a brief description 
-of supplementary materials (code, properly labelled data, etc.). State each student’s contribution 
-to the project and report according to the provided template on ItsLearning.
+Insert the link to an edited video (unlisted YouTube) of your project and a brief description of supplementary materials (code, properly labelled data, etc.). State each student's contribution to the project and report according to the provided template on ItsLearning.
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{thebibliography}{99}
-
-\bibitem{tamagotchi-wiki} Tamagotchi, https://en.wikipedia.org/wiki/Tamagotchi, accessed November 2025.
-\bibitem{ecoflex} Ecoflex 00-30, https://www.smooth-on.com/products/ecoflex-00-30/, accessed November 2025.
-\bibitem{furby-wiki} Furby, https://en.wikipedia.org/wiki/Furby, accessed November 2025.
-\bibitem{making-molds} Making 3D Printed Molds for Silicone Casting, https://www.youtube.com/shorts/DatZ0Fbp9No, accessed November 2025.
-
-
-
-
-
-
-\end{thebibliography}
-
-
+\printbibliography[title={References}]
 
 
 \end{document}
