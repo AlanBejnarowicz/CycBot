@@ -1,2 +1,3 @@
 # CycBot
- Miękko mi na robocie 
+
+A Soft Robot for Non-verbal Communication in Human-Robot interaction
