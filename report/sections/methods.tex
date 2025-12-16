@@ -41,6 +41,12 @@
 
 \par Additionally, sudden changes in pressure readings can be detected, and counted as touches. Timers are used to distinguish between the~short and long presses. After a~touch is detected, the~dead zone timer is started to prevent multiple touch detections from a~single press.
 
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.9\linewidth]{data/cycbot-diagram.png}
+    \caption{CycBot system diagram.}\label{fig:cycbot-diagram}
+\end{figure}
+
 \par The~other two pump are responsible for inflating the robot's ears. The ears can be inflated independently, but as they are connected through the~solenoid valves to the~same motor shield output, they can only be deflated simultaneously. There are also no pressure sensor for the ears, so they have to be controlled by a feed-forward controller.
 
 \par The~servo motor is used to move the~robot's head. It is powered directly from the~power adapter to avoid voltage drops on the~microcontroller.
@@ -129,6 +135,7 @@
 
 \par Signals used in experiments are robot behaviours explained in Table~\ref{tab:emotions}.
 
-\textbf{Hypothesis H1:} Participants will touch robot more while presenting Interested or Annoyed expression.
-\textbf{Measure:} Number of touches during each behaviour.
-\textbf{Analysis:} One-way ANOVA test to compare means of touches during each behaviour.
+\textbf{Hypothesis H1:} Participants will more likely rate well the robot's 
+emotions that involve ear movements (happy, sad) compared to emotions that involve only head movements (interested, annoyed).
+\textbf{Measure:}  Likert scale ranging from 1 (Very poor) to 5 (Very good). 
+\textbf{Analysis:} ANOVA test to compare mean ratings for different emotions.
