@@ -3,25 +3,60 @@
 
 \subsection{HRI experiment data}
 
-\par Our experiment involved online survey where partitipants watched five videos of the~CycBot robot expressing different emotions: idle, interested, happy, annoyed, and sad. After watching each video, participants were asked to indicate
-\textbf{How well does the robot simulate the following emotion?}
- and then using a~5-point Likert scale ranging from 1 (Very poor) to 5 (Very good). The collected data is summarised in Table
-"
-~\ref{tab:table-HRI-data}.
+\par The~collected data is summarized in Table~\ref{tab:hri-data} and in Figure~\ref{fig:hri-data}. The~average scores for~each emotion are presented in Table~\ref{tab:average-hri-data}.
 
 \begin{table}[!ht]
-    \caption{Count of touches during each robot behaviour in HRI experiment.}\label{tab:table-HRI-data}
+    \caption{HRI experiment results.}\label{tab:hri-data}
     \begin{center}
-        \begin{tabular}{ccccc}
+        \begin{tabular}{cccccc}
             \hline
-            \multicolumn{1}{c}{Expression} & Average user grade (1-5) \\
+            Emotion & Very Poor & Poor & Acceptable & Good & Very Good \\
             \hline
-            Idle & --- \\
-            Interested & --- \\
-            Happy & ---  \\
-            Annoyed & --- \\
-            Sad & --- \\
+            Sad & 1 & 0 & 2 & 1 & 1 \\
+            Interested & 0 & 1 & 1 & 1 & 2 \\
+            Happy & 0 & 2 & 1 & 1 & 1 \\
+            Annoyed & 1 & 1 & 2 & 0 & 1 \\
             \hline
         \end{tabular}
     \end{center}
 \end{table}
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\linewidth]{data/hri_data.png}
+    \caption{HRI experiment results visualization.}\label{fig:hri-data}
+\end{figure}
+
+\begin{table}[!ht]
+    \caption{Average results.}\label{tab:average-hri-data}
+    \begin{center}
+        \begin{tabular}{cc}
+            \hline
+            Emotion & Average Score \\
+            \hline
+            Sad & 3.2 \\
+            Interested & 3.8 \\
+            Happy & 3.2 \\
+            Annoyed & 2.8 \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{table}
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\linewidth]{data/age_data.png}
+    \caption{Age distribution of~the~participants.}\label{fig:age-data}
+\end{figure}
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\linewidth]{data/gender_data.png}
+    \caption{Gender distribution of~the~participants.}\label{fig:gender-data}
+\end{figure}
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\linewidth]{data/previous_experience_data.png}
+    \caption{Previous robot interaction experience distribution of~the~participants.}\label{fig:previous-experience-data}
+\end{figure}
