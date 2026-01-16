@@ -24,6 +24,18 @@
 \end{figure}
 
 % TODO: Add something about ears
+\par The ear actuators of CycBot were implemented as soft bending pneumatic actuators based on the basic PneuNets actuator design introduced during Tutorial 3: Actuator Fabrication~\cite{tutorial3-actuator}. The design was intentionally kept simple and closely followed the tutorial example in order to ensure reliable and repeatable actuation. Each ear consists of a silicone body cast from Ecoflex 00-30, forming an internal air chamber that bends when inflated due to asymmetric wall thickness. The bottom layer of the actuator was made thicker than the top layer, constraining expansion on one side and causing the ear to bend downward when pressurized.
+\par The mold used for fabricating the ear actuators was 3D-printed.Liquid silicone was mixed in a 1:1 ratio, degassed in a vacuum chamber to remove trapped air bubbles, and poured slowly into the mold. After pouring, the mold was cured in an oven at approximately 55–60 °C for approximately 20 minutes.
+
+\par After curing, the actuators were carefully removed from the mold, trimmed, and fitted with pneumatic tubing. The tubing was inserted into the internal air channel and sealed using silicone adhesive (Sil-Poxy) to ensure an airtight connection. The completed ear actuators were then mounted onto the robot’s head structure.
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[height=0.9\linewidth, angle=90]{data/ears.jpeg}
+    \caption{Fabricated soft pneumatic ear actuators based on a PneuNets bending design.}
+    \label{fig:ear-actuators}
+\end{figure}
+
+\par Inflation and deflation of the ear actuators are controlled using air pumps and solenoid valves, enabling expressive ear movements used for non-verbal communication. While the simplicity of the actuator design ensured reliable operation, it also limited the range and precision of achievable motions, which may have affected the recognizability of certain emotional expressions.
 
 \subsection{Hardware and software}
 
