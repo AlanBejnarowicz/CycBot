@@ -11,6 +11,12 @@
 
 \par The~most complicated part of CycBot to make, was the~silicone belly. We designed and 3D-printed a~mold shown in Figure~\ref{fig:forma-cyca}. The~mold consists of four parts: split outer shell, inner core and cap to hold the~inner core in place. The~first step in making the~silicone belly was to assemble the~mold by~placing the~inner core inside the~outer shells, and securing it with a~cap. Then, we sealed all edges with the~duct tape to prevent silicone leakage. Because of the~wall thickness of the~belly (3~mm on the~walls and 8~mm on the~bottom) and the~mold being relatively tall, we were concerned about air bubbles getting trapped inside the~silicone during pouring, which would make our part faulty. To keep our silicone bubble free, we put our silicone mixture in a~vacuum chamber for 15~minutes and then poured it slowly into the~mold through a~small hole on the~top of the~mold cap. After pouring, we placed the~mold in a~vacuum pot for 45~minutes to further eliminate any remaining air bubbles.
 
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.75\linewidth]{data/na_odlew.jpg}
+    \caption{Process of casting the~silicone belly.}\label{fig:na-odlew}
+\end{figure}
+
 \par Fortunately, our part came out bubble-free on the~first try. We then placed the~mold in an~oven at~60$^\circ$C for 2~hours to cure the~silicone. We put our mold in the~oven for longer than recommended by the~silicone manufacturer to make sure the~silicone was fully cured, because 3D-printed molds tend to absorb some heat during the~curing process.
 
 \par After curing, we disassembled the~mold and removed the~silicone belly. The~final step was to trim any excess silicone and glue the~belly to the~robot frame using Sil-Poxy silicone adhesive. Figure~\ref{fig:cycbot-section} shows a~section view of the~CycBot with all internal components and silicone parts.
@@ -23,19 +29,20 @@
     \caption{3D~model of mold used to cast CycBot's silicone belly.}\label{fig:forma-cyca}
 \end{figure}
 
-% TODO: Add something about ears
-\par The ear actuators of CycBot were implemented as soft bending pneumatic actuators based on the basic PneuNets actuator design introduced during Tutorial 3: Actuator Fabrication~\cite{tutorial3-actuator}. The design was intentionally kept simple and closely followed the tutorial example in order to ensure reliable and repeatable actuation. Each ear consists of a silicone body cast from Ecoflex 00-30, forming an internal air chamber that bends when inflated due to asymmetric wall thickness. The bottom layer of the actuator was made thicker than the top layer, constraining expansion on one side and causing the ear to bend downward when pressurized.
-\par The mold used for fabricating the ear actuators was 3D-printed.Liquid silicone was mixed in a 1:1 ratio, degassed in a vacuum chamber to remove trapped air bubbles, and poured slowly into the mold. After pouring, the mold was cured in an oven at approximately 55–60 °C for approximately 20 minutes.
+\par The~ear actuators of CycBot were implemented as soft bending pneumatic actuators based on the~basic PneuNets actuator design introduced during Tutorial 3: Actuator Fabrication~\cite{tutorial3-actuator}. The~design was intentionally kept simple and closely followed the~tutorial example in order to ensure reliable and repeatable actuation. Each ear consists of a~silicone body cast from Ecoflex~00-30, forming an~internal air chamber that bends when inflated due to asymmetric wall thickness. The~bottom layer of the~actuator was made thicker than the~top layer, constraining expansion on one side and causing the~ear to bend downward when pressurized.
 
-\par After curing, the actuators were carefully removed from the mold, trimmed, and fitted with pneumatic tubing. The tubing was inserted into the internal air channel and sealed using silicone adhesive (Sil-Poxy) to ensure an airtight connection. The completed ear actuators were then mounted onto the robot’s head structure.
+\par The~mold used for fabricating the~ear actuators was 3D-printed. Liquid silicone was mixed in a~1:1 ratio, degassed in a~vacuum chamber to remove trapped air bubbles, and poured slowly into the~mold. After pouring, the~mold was cured in an~oven at approximately 55--60$^\circ$C for approximately 20~minutes.
+
+\par After curing, the~actuators were carefully removed from the~mold, trimmed, and fitted with pneumatic tubing. The~tubing was inserted into the~internal air channel and sealed using silicone adhesive (Sil-Poxy) to ensure an~airtight connection. The~completed ear actuators were then mounted onto the~robot's head structure.
+
 \begin{figure}[!ht]
     \centering
     \includegraphics[height=0.9\linewidth, angle=90]{data/ears.jpeg}
-    \caption{Fabricated soft pneumatic ear actuators based on a PneuNets bending design.}
+    \caption{Fabricated soft pneumatic ear actuators based on the~PneuNets bending design.}
     \label{fig:ear-actuators}
 \end{figure}
 
-\par Inflation and deflation of the ear actuators are controlled using air pumps and solenoid valves, enabling expressive ear movements used for non-verbal communication. While the simplicity of the actuator design ensured reliable operation, it also limited the range and precision of achievable motions, which may have affected the recognizability of certain emotional expressions.
+\par Inflation and deflation of the~ear actuators are controlled using air pumps and solenoid valves, enabling expressive ear movements used for non-verbal communication. While the~simplicity of the~actuator design ensured reliable operation, it also limited the range and precision of achievable motions, which may have affected the~recognizability of certain emotional expressions.
 
 \subsection{Hardware and software}
 
